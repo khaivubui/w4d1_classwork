@@ -1,34 +1,40 @@
 class UsersController < ApplicationController
   def index
-    render json: User.all
+    @users = User.all
+    render json: @users
   end
 
   def create
-    new_user = User.new(user_params)
-    if new_user.save
-      render json: new_user
+    @user = User.new(user_params)
+    if @user.save
+      render json: @user
     else
-      render json: new_user.errors.full_messages, status: :unprocessable_entity
+      render json: @user.errors.full_messages, status: :unprocessable_entity
     end
   end
 
   def show
-    user = User.find(params[:id])
-    render json: user
+    @user = User.find(params[:id])
+    render json: @user
   end
 
   def update
-    user = User.find(params[:id])
-    user.update_attributes(user_params)
-    render json: user
+    @user = User.find(params[:id])
+    if @user.update(user_params)
+      render json: @user
+    else
+      render json: @user.errors.full_messages, status: :unprocessable_entity
+    end
   end
 
   def destroy
-    user = User.find(params[:id])
-    user.delete
+    @user = User.find(params[:id])
+    @user.delete
   end
 
+  private
+
   def user_params
-    params[:user].permit(:name, :email)
+    params.require(:user).permit(:username)
   end
 end
