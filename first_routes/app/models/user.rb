@@ -23,10 +23,16 @@ class User < ApplicationRecord
            through: :artwork_shares,
            source: :artwork
 
+  has_many :comments
+
   def create_artwork(options)
     Artwork.create(
     title: options[:title],
     image_url: options[:image_url],
     artist_id: self.id)
+  end
+
+  def write_comment(artwork, comment_str)
+    Comment.create(user_id: self.id, artwork_id: artwork.id, body: comment_str)
   end
 end

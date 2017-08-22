@@ -18,11 +18,15 @@ class Artwork < ApplicationRecord
   belongs_to :artist,
              class_name: :User
 
-  has_many :artwork_shares
+  has_many :artwork_shares,
+           dependent: :destroy
 
   has_many :shared_viewers,
            through: :artwork_shares,
            source: :viewer
+
+  has_many :comments,
+           dependent: :destroy
 
   def share_to(user)
     ArtworkShare.create(viewer_id: user.id, artwork_id: self.id)
